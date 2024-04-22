@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const saltRounds = 10;
 
@@ -9,16 +12,19 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
     userName:{
         type:String,
-        maxlength:50
+        maxlength:50,
+        required: true 
     },
     email:{
         type:String,
         trim:true,
-        unique:true
+        unique:true,
+        required: true 
     },
     password:{
         type:String,
-        minlength:6
+        minlength:6,
+        required: true 
     },
     role:{
         type:Number,
@@ -26,15 +32,17 @@ const userSchema = new Schema({
     },
     phoneNum:{
         type:String,
-        maxlength:30
+        maxlength:30,
+        required: true 
+    },
+    cart:{
+        type : Array,
+        default: []
     },
     token:{
         type:String
-    },
-    tokenExp:{
-        type:Number
     }
-});
+}, { timestamps: true, updatedAt: false });
 
 userSchema.pre('save', function(next){
     var user = this;
@@ -71,11 +79,13 @@ userSchema.methods.checkPassword = async function(plainPassword){
 userSchema.methods.generateToken = async function(){
     var user = this;
 
-    var token = jwt.sign(user._id.toHexString(), 'SeCrEtKeY');
+    const expirationTime = '30m';
+    
+    var token = jwt.sign({_id:user._id.toHexString()}, process.env.JWT_SECRET,{ expiresIn: expirationTime});
+    
     user.token = token;
     try {
         await user.save();
-        //return user;
     } 
     catch (err) {
         throw err;
@@ -86,7 +96,7 @@ userSchema.methods.generateToken = async function(){
 userSchema.statics.findByToken = async function(token) {
     var userModel = this;
 
-    const decoded = jwt.verify(token, 'SeCrEtKeY');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     try{
         const user = await userModel.findOne({"_id":decoded, "token": token}); 
         return user;
