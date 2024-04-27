@@ -43,6 +43,7 @@ router.post('/login', async (req, res) => {
     }
 });
   
+//auth 미들웨어로 권한 검증 후 유저 정보 전달
 router.get('/auth', auth, (req,res) => {
     res.status(200)
     .json({
@@ -80,39 +81,29 @@ router.post('/logout', auth, async (req,res) => {
 router.post("/addCart", auth, async (req, res) => {
     try{
         const userInfo = await User.findOne({_id: req.user._id});
-    }
-    catch (err){
-        return res.status(200).json({ success: false, err });
-    }
-
-    let isProduct = false;
-    for(prod in userInfo.cart){
-        if(prod.id === req.body.productId){
-            isProduct = true;
-            break;
+        let isProduct = false;
+        
+        for(let prod in userInfo.cart){
+            if(prod.id === req.body.id){
+                isProduct = true;
+                break;
+            }
         }
-    }
-    
-    if(isProduct){
-        try{
+        //cart에 이미 상품이 있는 경우
+        if(isProduct){
             const userInfo = await User.findOneAndUpdate(
-            { _id: req.user._id, "cart.id" : req.body.productId },
+            { _id: req.user._id, "cart.id" : req.body.id },
             { $inc : {"cart.$.quantity" : 1} },
             { new : true }
             )
             return res.status(200).send(userInfo.cart);
         }
-        catch(err){
-            return res.status(400).json({ success : false, err });
-        }
-    }
-    else{
-        try{
+        else{
             const userInfo = await User.findOneAndUpdate(
                 { _id : req.user._id },
                 { $push: {
                     cart: {
-                        id: req.body.productId,
+                        id: req.body.id,
                         quantity: 1
                     }
                 }},
@@ -120,13 +111,13 @@ router.post("/addCart", auth, async (req, res) => {
             )
             return res.status(200).send(userInfo.cart);
         }
-        catch(err){
-            return res.status(400).json({ success : false, err });
-        }
+    }
+    catch (err){
+        return res.status(400).json({ success: false, err });
     }
 });
 
-router.get("/removeCart", auth, async (req, res) => {
+router.post("/removeCart", auth, async (req, res) => {
     try{
         const userInfo = await User.findOneAndUpdate(
             { _id : req.user._id },

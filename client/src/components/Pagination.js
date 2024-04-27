@@ -15,6 +15,7 @@ const Pagination = ({startPage, endPage, page, totalPage}) => {
             .fill()
             .map((_, i)=>(
                 <Button
+                    key={startPage+i}
                     onClick={()=>navigate(`?page=${startPage+i}`)}
                     aria-current={page === startPage+i ? "page" : null}
                 >
@@ -22,10 +23,9 @@ const Pagination = ({startPage, endPage, page, totalPage}) => {
                 </Button>
             ))}
             <Button onClick={()=>navigate(`?page=${page+1}`)}
-            disabled={page === totalPage}>
+                disabled={page === totalPage}>
                 &gt;
             </Button>
-            
         </Nav>
     )
 }
@@ -43,30 +43,24 @@ const Button = styled.button`
     padding: 8px;
     margin: 0;
     background-color:white;
-    /* background: black;
-    border-radius: 8px;
-    color: white; */
     color:#444;
     font-size: 1rem;
 
     &:hover{
-        /* background: tomato; */
-        color: darkcyan;
+        color: #BDA4D5;
         font-weight: bolder;
         cursor:pointer;
         transform: translateY(-2px);
     }
 
     &[disabled] {
-        /* background: grey; */
         cursor: revert;
         transform: revert;
     }
 
      &[aria-current] {
-        /* background: deeppink; */
         font-weight: bold;
-        color: darkcyan;
+        color: #BDA4D5;
         cursor: revert;
         transform: revert;
     }

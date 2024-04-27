@@ -16,7 +16,6 @@ const AllProduct = () => {
     const navigate = useNavigate();
     const itemLoading = useSelector(state => state.product.isLoading);
   
-    console.log(page);
     if (!posts?.productInfo) {
       return <div>No posts</div>
     }

@@ -32,9 +32,22 @@ export const usersApi = createApi({
                 url: '/auth',
                 method: 'GET'
             })
-        })
+        }),
+        addCart: builder.mutation({
+            query: ({id}) => ({
+                url: '/addCart',
+                method: 'POST',
+                body: {id}
+            })
+        }),
+        removeCart: builder.mutation({
+            query: ({id}) => ({
+                url: `/removeCart/${id}`,
+                method: 'GET'
+            })
+        }),
     }),
 });
 
-export const { useLoginUserMutation, useSignupUserMutation, useLogoutUserMutation, useLazyAuthUserQuery } = usersApi;
+export const { useLoginUserMutation, useSignupUserMutation, useLogoutUserMutation, useLazyAuthUserQuery, useAddCartMutation, useRemoveCartMutation } = usersApi;
 

@@ -81,7 +81,7 @@ const Wrapper = styled.div`
     width:100%;
     height:50px;
     margin:15px auto;
-    background-color: rgb(250,250,250);
+    background-color: #DAD2E9;
 `;
 
 export default Nav;

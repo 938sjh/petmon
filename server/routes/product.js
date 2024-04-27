@@ -108,12 +108,24 @@ router.get('/all', async (req,res) => {
     } 
     else {
         try{
-            const productInfo = await Product.find()   
+            const totalProduct = await Product.countDocuments();
+            const {
+                startPage,
+                endPage,
+                skip,
+                totalPage
+            } = paging(page, totalProduct, limit);
+
+            if(page > totalPage){
+                page = totalPage;
+            }
+            
+            const productInfo = await Product.find() 
             .skip(skip) 
             .limit(limit)
-            .populate("publisher")
+            .populate("publisher")  
             .exec();
-            return res.status(200).json({ success: true, productInfo, postSize: productInfo.length})
+            return res.status(200).json({ success: true, productInfo, startPage, endPage, totalPage})
         }
         catch (err){
             return res.status(400).json({ success: false, err})
@@ -189,17 +201,61 @@ router.post('/new', async (req,res) => {
 
 router.get('/detail/:id', async (req,res) => {
     let productId = req.params.id;
-    console.log(productId);
+    const storage = admin.storage();
     // ProductId를 이용해서 DB에서 상품정보 반환
     try {
-        const product = await Product.find({ _id: productId })
+        const productInfo = await Product.find({ _id: productId })
         .populate('publisher')
         .exec();
-        return res.status(200).send(product)
+        const file = storage.bucket().file(`image/${productInfo[0].images[0].path}`);
+        const expirationTime = new Date();
+        expirationTime.setMinutes(expirationTime.getMinutes() + 30);
+
+        let [url] = await file.getSignedUrl({
+            action: 'read',
+            expires: expirationTime
+        });
+        return res.status(200).json({productInfo, url})
     }
     catch (err){
         return res.status(400).send(err)
     }
 });
+
+router.get('/cart', async (req,res) => {
+    let productIds = req.query.id.split(',');
+    let returnProducts = [];
+    const storage = admin.storage();
+
+    //문자열을 배열로 변경
+    try {
+        const productInfo = await Product.find({ _id: {$in:productIds}})
+        .populate('publisher')
+        .exec();
+        for(const product of productInfo){
+            const file = storage.bucket().file(`image/${product.images[0].path}`);
+            const expirationTime = new Date();
+            expirationTime.setMinutes(expirationTime.getMinutes() + 30);
+
+            let [url] = await file.getSignedUrl({
+                action: 'read',
+                expires: expirationTime
+            });
+            const temp = {};
+            temp['_id'] = product._id;
+            temp['title'] = product._id;
+            temp['price'] = product.price;
+            temp['images'] = url;
+            returnProducts.push(temp);
+        };
+        return res.status(200).json(returnProducts);
+    }
+    catch (err){
+        return res.status(400).send(err)
+    }
+
+});
+
+
 
 export default router;

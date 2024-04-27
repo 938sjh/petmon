@@ -21,7 +21,7 @@ export const productApi = createApi({
                 method: 'POST',
                 body: dataToSubmit
             }),
-            invalidatesTags: [{ type: 'Product' }, { type: 'NewProduct' }],
+            invalidatesTags: ['Product','NewProduct']
         }),
         getAllProducts: builder.query({
             query: ({ page = 1}) => ({
@@ -53,12 +53,18 @@ export const productApi = createApi({
         }),
         getDetailProduct: builder.query({
             query: ({id}) => ({
-                url: `detail/:${id}`,
+                url: `detail/${id}`,
                 method: 'GET'
+            })
+        }),
+        getCart: builder.query({
+            query:(cartItems) => ({
+                 url: `cart/?id=${cartItems}`,
+                 method: 'GET'
             })
         })
 
     }),
 });
 
-export const { useUploadImageMutation, useUploadProductMutation, useGetAllProductsQuery, useGetNewProductsQuery, useGetPopularProductsQuery, useGetCategoryProductsQuery, useGetDetailProductQuery } = productApi;
+export const { useUploadImageMutation, useUploadProductMutation, useGetAllProductsQuery, useGetNewProductsQuery, useGetPopularProductsQuery, useGetCategoryProductsQuery, useGetDetailProductQuery, useLazyGetCartQuery } = productApi;

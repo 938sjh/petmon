@@ -41,11 +41,14 @@ function AuthCheck({ component: Component, option = null, adminRoute = null }) {
         getResult();
     }, [Component]);
 
+
+    
     //login이나 메인페이지로 가야되는 경우 spinner를 띄워줌으로 navigate까지 대기
+    //유저 정보 쓸 수 있도록 Props로 auth에서 받아온 data 전달
     return (
         <React.Fragment>   
             {((!isLogin && (adminRoute || option)) || isLoading) && <Spinner/>}
-            <Component/>
+            <Component user={data}/>
         </React.Fragment>
     );
 }

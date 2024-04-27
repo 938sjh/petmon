@@ -43,9 +43,11 @@ const Header = (props) => {
                 $padding="0 15px"
                 $width="1100px"
                 $margin="10px auto">
-                    <Span>펫몬소개</Span>
-                    <span style={{margin:"0 13px", color:"rgb(239,239,239)"}}>|</span>
-                    <Span>마이펫몬</Span>
+                    <A onClick={()=>navigate("/product/upload")}>
+                        <Span>
+                            상품 업로드
+                        </Span>
+                    </A>
                     <ul
                         style={{
                         float: "right",
@@ -95,9 +97,7 @@ const Header = (props) => {
             $padding="0 15px"
             $width="1100px"
             $margin="10px auto">
-                <Span>펫몬소개</Span>
-                <span style={{margin:"0 13px", color:"rgb(239,239,239)"}}>|</span>
-                <Span>마이펫몬</Span>
+                <Span></Span>
                 <ul
                 style={{
                 float: "right",

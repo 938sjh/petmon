@@ -11,11 +11,12 @@ import { useNavigate } from "react-router-dom";
 const UploadProduct = () => {
     const navigate = useNavigate();
 
-    const [title, setTitle] = useState("")
-    const [description, setDescription] = useState("")
-    const [price, setPrice] = useState(0)
-    const [category, setCategory] = useState("강아지")
-    const [images, setImages] = useState([])
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [price, setPrice] = useState(0);
+    const [stock, setStock] = useState(0);
+    const [category, setCategory] = useState("강아지");
+    const [images, setImages] = useState([]);
 
     const [uploadImage, { 
         isLoading: isImageLoading, 
@@ -84,6 +85,7 @@ const UploadProduct = () => {
             title: title,
             description: description,
             price: price,
+            stock: stock,
             images: images,
             category: category,
             publisher: userId
@@ -173,6 +175,17 @@ const UploadProduct = () => {
                         setPrice(e.target.value);
                     }}
                     value={price}
+                    $width="700px"
+                    $height="40px"
+                    $margin="15px 0px 30px 0px"
+                />
+                <label>재고</label>
+                <Input
+                    placeholder="재고"
+                    onChange={(e) => {
+                        setStock(e.target.value);
+                    }}
+                    value={stock}
                     $width="700px"
                     $height="40px"
                     $margin="15px 0px 30px 0px"

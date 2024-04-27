@@ -1,7 +1,40 @@
-import React from "react";
+import React, {useEffect} from "react";
 import styled from "styled-components";
+import { useLazyGetCartQuery } from "../redux/api/product";
 
 const Cart = (props) => {
+    const [getCart, {data, isLoading, isError}] = useLazyGetCartQuery();
+
+    const getItems = async () => {
+        let cartItems = [];
+        try{
+            if(props.user && props.user.cart){
+                if(props.user.cart.length > 0){
+                    props.user.cart.forEach(element => {
+                        cartItems.push(element.id);
+                    });    
+                    const result = await getCart(cartItems).unwrap();
+                    cartItems = [];
+                    for(let i = 0; i < result.length; i++){
+                        for(let j = 0; j < props.user.cart.length; j++){
+                            if(result[i]._id === props.user.cart[j].id){
+                                cartItems.push({...result[i], quantity:props.user.cart[j].quantity});
+                                break;
+                            }
+                        }
+                    }
+                    console.log(cartItems);
+                }
+            }    
+        }
+        catch(err){
+            console.error(err,"카트 불러오기 실패");
+        } 
+    }  
+    ;
+    useEffect(() => {            
+        getItems();
+    }, [props.user]);
 
     return (
         <Wrapper>
@@ -22,6 +55,22 @@ const Cart = (props) => {
                         <li>배송비</li>
                     </ProductUl>
                 </ProductHeader>
+                <ProductBody>
+                    <ProductInfoUl>
+                        <li>
+
+                        </li>
+                        <li>
+                            
+                        </li>
+                        <li>
+                            
+                        </li>
+                        <li>
+                            0원
+                        </li>
+                    </ProductInfoUl>
+                </ProductBody>
             </ProductContainer>
             <PriceContainer>
                 <PriceHeader>
@@ -69,7 +118,9 @@ const ProductHeader = styled.div`
     height: 46px;
     border-bottom: 1px solid #d6dadd;
 `;
-
+const ProductBody = styled.div`
+    line-height: 160%;
+`;
 const ProductUl = styled.ul`
     list-style: none;
     display: flex;
@@ -89,6 +140,11 @@ const ProductUl = styled.ul`
         width:250px;
     }
 `;
+
+const ProductInfoUl = styled(ProductUl)`
+    height:135px;
+`;
+
 
 const PriceContainer = styled.div`
 `;
