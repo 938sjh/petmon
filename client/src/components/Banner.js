@@ -9,10 +9,10 @@ import { IoIosArrowForward } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 
 
-import banner_1 from "../image/banner_1.jpg";
-import banner_2 from "../image/banner_2.jpg";
-import banner_3 from "../image/banner_3.jpg";
-import banner_4 from "../image/banner_4.png";
+import banner_1 from "../image/banner_1.jpeg";
+import banner_2 from "../image/banner_2.jpeg";
+import banner_3 from "../image/banner_3.jpeg";
+import banner_4 from "../image/banner_4.jpeg";
 
 
 
@@ -36,10 +36,10 @@ const Banner = () => {
     return (
     <Wrapper>
         <StyledSlider {...settings}> 
-            <Image $height="600px" $src={banner_1}/>
-            <Image $height="600px" $src={banner_2}/>
-            <Image $height="600px" $src={banner_3}/>
-            <Image $height="600px" $src={banner_4}/>
+            <Image $height="940px" $src={banner_1}/>
+            <Image $height="940px" $src={banner_2}/>
+            <Image $height="940px" $src={banner_3}/>
+            <Image $height="940px" $src={banner_4}/>
         </StyledSlider>        
     </Wrapper>  
     
@@ -47,8 +47,7 @@ const Banner = () => {
 };
 
 const Wrapper = styled.div`
-    height:650px;
-    margin:50px 0;
+    height:945px;
     background-color: #f7f7f7;
 `;
 

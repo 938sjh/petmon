@@ -81,6 +81,7 @@ const Wrapper = styled.div`
     width:100%;
     height:50px;
     margin:15px auto;
+    margin-bottom:0px;
     background-color: #DAD2E9;
 `;
 

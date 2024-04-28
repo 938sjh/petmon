@@ -4,8 +4,6 @@ import styled from 'styled-components';
 import Banner from "../components/Banner";
 
 const Main = (props) => {
-    const dispatch = useDispatch();
-
     return (
         <React.Fragment>
             <Wrapper>
