@@ -4,6 +4,7 @@ import Product from "../models/Product.js";
 import admin from "firebase-admin";
 import serviceAccount from "../serviceAccount.json" assert {type:'json'};
 import dotenv from "dotenv";
+import User from "../models/User.js";
 
 dotenv.config();
 
@@ -222,13 +223,19 @@ router.get('/detail/:id', async (req,res) => {
     }
 });
 
-router.get('/cart', async (req,res) => {
-    let productIds = req.query.id.split(',');
+router.get('/cart/:id', async (req,res) => {
+    let productIds = [];
+    let userId = req.params.id;
+    
     let returnProducts = [];
     const storage = admin.storage();
 
-    //문자열을 배열로 변경
     try {
+        const userInfo = await User.find({ _id: userId });
+        const userCart = userInfo[0].cart;
+        for(let item of userCart){
+            productIds.push(item.id);
+        }
         const productInfo = await Product.find({ _id: {$in:productIds}})
         .populate('publisher')
         .exec();
@@ -242,11 +249,17 @@ router.get('/cart', async (req,res) => {
                 expires: expirationTime
             });
             const temp = {};
-            temp['_id'] = product._id;
-            temp['title'] = product._id;
-            temp['price'] = product.price;
-            temp['images'] = url;
-            returnProducts.push(temp);
+            for(let item of userCart){
+                if(product._id == item.id){
+                    temp['_id'] = product._id;
+                    temp['title'] = product.title;
+                    temp['price'] = product.price;
+                    temp['images'] = url;
+                    temp['quantity'] = item.quantity;
+                    returnProducts.push(temp);
+                    break;
+                }
+            }
         };
         return res.status(200).json(returnProducts);
     }

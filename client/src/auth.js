@@ -47,8 +47,8 @@ function AuthCheck({ component: Component, option = null, adminRoute = null }) {
     //유저 정보 쓸 수 있도록 Props로 auth에서 받아온 data 전달
     return (
         <React.Fragment>   
-            {((!isLogin && (adminRoute || option)) || isLoading) && <Spinner/>}
-            <Component user={data}/>
+            {((!isLogin && (adminRoute || option)) || isLoading) ? <Spinner/> :
+            <Component/>}
         </React.Fragment>
     );
 }

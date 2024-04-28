@@ -143,4 +143,29 @@ router.post("/removeCart", auth, async (req, res) => {
     }
 });
 
+router.post("/buy", auth, async (req, res) => {
+    try{
+        const userInfo = await User.findOne({ _id : req.user._id });
+        //판매 개수 업데이트
+        for(let item of userInfo.cart){
+            await Product.updateOne(
+                {_id:item.id},
+                {
+                    $inc: {
+                        "sold" : item.quantity
+                    }
+                },
+                {new: false},
+            )
+            
+        }
+        userInfo.cart = [];
+        await userInfo.save();
+        return res.status(200).json({ success : true });
+    }
+    catch(err){
+        return res.status(400).json({ success : false, err});
+    }
+});
+
 export default router;

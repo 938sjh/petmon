@@ -25,41 +25,41 @@ export const productApi = createApi({
         }),
         getAllProducts: builder.query({
             query: ({ page = 1}) => ({
-                url: `all?page=${page}`,
+                url: `/all?page=${page}`,
                 method: 'GET'
             }),
             providesTags: ['Product'],               
         }),
         getPopularProducts: builder.query({
             query: () => ({
-                url: `Popular`,
+                url: `/popular`,
                 method: 'GET'
             }),
             providesTags: ['PopularProduct'],               
         }),
         getNewProducts: builder.query({
             query: () => ({
-                url: `new`,
+                url: `/new`,
                 method: 'GET'
             }),
             providesTags: ['NewProduct'],               
         }),
         getCategoryProducts: builder.query({
             query: ({ page = 1, category}) => ({
-                url: `category?page=${page}&category=${category}`,
+                url: `/category?page=${page}&category=${category}`,
                 method: 'GET'
             }),
             providesTags: ['Product'],               
         }),
         getDetailProduct: builder.query({
             query: ({id}) => ({
-                url: `detail/${id}`,
+                url: `/detail/${id}`,
                 method: 'GET'
             })
         }),
         getCart: builder.query({
-            query:(cartItems) => ({
-                 url: `cart/?id=${cartItems}`,
+            query:({id}) => ({
+                 url: `/cart/${id}`,
                  method: 'GET'
             })
         })
@@ -67,4 +67,4 @@ export const productApi = createApi({
     }),
 });
 
-export const { useUploadImageMutation, useUploadProductMutation, useGetAllProductsQuery, useGetNewProductsQuery, useGetPopularProductsQuery, useGetCategoryProductsQuery, useGetDetailProductQuery, useLazyGetCartQuery } = productApi;
+export const { useUploadImageMutation, useUploadProductMutation, useGetAllProductsQuery, useGetNewProductsQuery, useGetPopularProductsQuery, useGetCategoryProductsQuery, useGetDetailProductQuery, useGetCartQuery } = productApi;

@@ -46,8 +46,14 @@ export const usersApi = createApi({
                 method: 'GET'
             })
         }),
+        buy: builder.mutation({
+            query: () => ({
+                url: '/buy',
+                method: 'POST'
+            })
+        })
     }),
 });
 
-export const { useLoginUserMutation, useSignupUserMutation, useLogoutUserMutation, useLazyAuthUserQuery, useAddCartMutation, useRemoveCartMutation } = usersApi;
+export const { useLoginUserMutation, useSignupUserMutation, useLogoutUserMutation, useLazyAuthUserQuery, useAddCartMutation, useRemoveCartMutation, useBuyMutation } = usersApi;
 

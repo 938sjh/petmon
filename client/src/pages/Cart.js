@@ -1,41 +1,45 @@
-import React, {useEffect} from "react";
+import React, {useState,useEffect} from "react";
 import styled from "styled-components";
-import { useLazyGetCartQuery } from "../redux/api/product";
+import { useGetCartQuery } from "../redux/api/product";
+import { useSelector } from "react-redux";
+import { Button } from "../elements";
+import { useNavigate } from "react-router-dom";
+import { useBuyMutation } from "../redux/api/user";
+import Spinner from "../shared/loading";
 
 const Cart = (props) => {
-    const [getCart, {data, isLoading, isError}] = useLazyGetCartQuery();
+    const id = useSelector(state=>state.user.userId);
+    const { data, isLoading, isFetching, isSuccess } = useGetCartQuery({id});
+    const navigate = useNavigate();
+    const [ buy, { isLoading : buyLoading, isError : isBuyError}] = useBuyMutation();
 
-    const getItems = async () => {
-        let cartItems = [];
-        try{
-            if(props.user && props.user.cart){
-                if(props.user.cart.length > 0){
-                    props.user.cart.forEach(element => {
-                        cartItems.push(element.id);
-                    });    
-                    const result = await getCart(cartItems).unwrap();
-                    cartItems = [];
-                    for(let i = 0; i < result.length; i++){
-                        for(let j = 0; j < props.user.cart.length; j++){
-                            if(result[i]._id === props.user.cart[j].id){
-                                cartItems.push({...result[i], quantity:props.user.cart[j].quantity});
-                                break;
-                            }
-                        }
-                    }
-                    console.log(cartItems);
-                }
-            }    
-        }
-        catch(err){
-            console.error(err,"카트 불러오기 실패");
-        } 
-    }  
-    ;
-    useEffect(() => {            
-        getItems();
-    }, [props.user]);
+    const buyHandler = async () => {        
+        try {
+            const { data } = await buy();
+    
+            if(data.success === true){
+                // 로그인 성공 후 유저 데이터 저장
+                window.alert("구매가 완료 되었습니다.");
+                navigate("/");
+            }
+            else{
+                window.alert("구매 실패");
+            }
+          } catch (err) {
+            console.error('Login failed:', err);
+          }
+    };
 
+
+    if(isLoading) {
+        return <Spinner/>
+    }
+
+    let totalPrice = 0;
+    data.map((prod) => {
+        totalPrice += prod.price * prod.quantity;
+    })
+   
     return (
         <Wrapper>
             <Title>
@@ -56,20 +60,26 @@ const Cart = (props) => {
                     </ProductUl>
                 </ProductHeader>
                 <ProductBody>
-                    <ProductInfoUl>
-                        <li>
-
-                        </li>
-                        <li>
-                            
-                        </li>
-                        <li>
-                            
-                        </li>
-                        <li>
-                            0원
-                        </li>
-                    </ProductInfoUl>
+                    {data.map((prd, idx) => {
+                        return (
+                            <ProductInfoUl key={idx}>
+                                <li>
+                                    <img src={prd.images}/>
+                                    <div>{prd.title}</div>
+                                </li>
+                                <li>
+                                    {prd.quantity}
+                                </li>
+                                <li>
+                                    {prd.price}원
+                                </li>
+                                <li>
+                                    0원
+                                </li>
+                            </ProductInfoUl>
+                        )
+                    })}
+                    
                 </ProductBody>
             </ProductContainer>
             <PriceContainer>
@@ -80,7 +90,35 @@ const Cart = (props) => {
                         <li>총결제금액</li>
                     </PriceUl>
                 </PriceHeader>
+                <PriceInfoUl>
+                        <li>{totalPrice}원</li>
+                        <li>0원</li>
+                        <li>{totalPrice}원</li>
+                </PriceInfoUl>
             </PriceContainer>
+            <ButtonContainer>
+                <Button
+                    type="button"
+                    onClick={()=>{
+                        navigate("/product/all");
+                    }}
+                    $margin="0px 10px"
+                    $width="350px"
+                    $color="#BDA4D5"
+                    $bg="#FFFFFF"
+                    $border="1px solid #e7e7e7"
+                >
+                    쇼핑 계속하기
+                </Button>
+                <Button
+                    type="button"
+                    onClick={buyHandler}
+                    $width="350px"
+                    $margin="0px 10px"
+                >
+                    구매하기
+                </Button>
+            </ButtonContainer>
 
         </Wrapper>
 
@@ -119,7 +157,7 @@ const ProductHeader = styled.div`
     border-bottom: 1px solid #d6dadd;
 `;
 const ProductBody = styled.div`
-    line-height: 160%;
+    min-height: 130px;
 `;
 const ProductUl = styled.ul`
     list-style: none;
@@ -142,7 +180,28 @@ const ProductUl = styled.ul`
 `;
 
 const ProductInfoUl = styled(ProductUl)`
-    height:135px;
+    height:130px;
+    & li{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    & li:first-child{
+        display: flex;
+        justify-content: center;
+
+        
+        & img{
+            width: 90px;
+            height: 90px;
+            margin: 20px 0;
+            border-radius: 9px;
+            cursor: pointer;
+        }
+        & div{
+            width: 300px;
+        }
+    }
 `;
 
 
@@ -171,5 +230,20 @@ const PriceUl = styled.ul`
         width:300px;
     }
 `;
+const ButtonContainer = styled.div`
+    display: flex;
+    justify-content: center;
+`
+
+const PriceInfoUl = styled(PriceUl)`
+    text-align: center;
+    & li{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 110px;
+    }
+`;
+
 
 export default Cart;
