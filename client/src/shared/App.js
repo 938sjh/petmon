@@ -8,6 +8,8 @@ import Cart from "../pages/Cart";
 import UploadProduct from "../pages/UploadProduct";
 import DetailProduct from "../pages/DetailProduct";
 import AllProduct from "../pages/AllProduct";
+import PopularProduct from "../pages/PopularProduct";
+import NewProduct from "../pages/NewProduct"
 import { Routes,Route } from "react-router-dom";
 import AuthCheck from "../auth";
 
@@ -23,9 +25,9 @@ function App() {
           <Route path="/product/upload" element={<AuthCheck component={UploadProduct} option/>}/>
           <Route path="/product/detail/:id" element={<AuthCheck component={DetailProduct}/>}/>
           <Route path="/product/all" element={<AuthCheck component={AllProduct}/>}/>
-          <Route path="/product/popular" element={<AuthCheck component={DetailProduct}/>}/>
-          <Route path="/product/new" element={<AuthCheck component={DetailProduct}/>}/>
-          <Route path="/community" element={<AuthCheck component={DetailProduct}/>}/>
+          <Route path="/product/popular" element={<AuthCheck component={PopularProduct}/>}/>
+          <Route path="/product/new" element={<AuthCheck component={NewProduct}/>}/>
+          {/* <Route path="/community" element={<AuthCheck component={DetailProduct}/>}/> */}
         </Routes>
       <Footer/>
     </React.Fragment>

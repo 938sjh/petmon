@@ -21,12 +21,14 @@ const DetailProduct = (props) => {
             window.alert("로그인 후 구매할 수 있습니다.");
             navigate('/login');
         }
-        try{
-            const data = await addCart({id});
-            navigate("/cart");
-        }
-        catch(err){
-            console.error(err,"장바구니 추가 실패");
+        else{
+            try{
+                const data = await addCart({id});
+                navigate("/cart");
+            }
+            catch(err){
+                console.error(err,"장바구니 추가 실패");
+            }
         }
     
     };
@@ -36,12 +38,14 @@ const DetailProduct = (props) => {
             window.alert("로그인 후 구매할 수 있습니다.");
             navigate('/login');
         }
-        try{
-            const data = await addCart({id});
-            window.alert("장바구니에 담았습니다.");
-        }
-        catch(err){
-            console.error(err,"장바구니 추가 실패");
+        else{
+            try{
+                const data = await addCart({id});
+                window.alert("장바구니에 담았습니다.");
+            }
+            catch(err){
+                console.error(err,"장바구니 추가 실패");
+            }
         }
 
     };

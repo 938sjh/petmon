@@ -36,10 +36,10 @@ const Banner = () => {
     return (
     <Wrapper>
         <StyledSlider {...settings}> 
-            <Image $height="940px" $src={banner_1}/>
-            <Image $height="940px" $src={banner_2}/>
-            <Image $height="940px" $src={banner_3}/>
-            <Image $height="940px" $src={banner_4}/>
+            <Image onClick={(()=>navigate("/product/all?page=1&category=고양이"))} $height="940px" $src={banner_1}/>
+            <Image onClick={(()=>navigate("/product/all?page=1&category=강아지"))}$height="940px" $src={banner_2}/>
+            <Image onClick={(()=>navigate("/product/all?page=1&category=강아지"))} $height="940px" $src={banner_3}/>
+            <Image onClick={(()=>navigate("/product/all?page=1&category=고양이"))} $height="940px" $src={banner_4}/>
         </StyledSlider>        
     </Wrapper>  
     

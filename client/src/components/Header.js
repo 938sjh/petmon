@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useTransition, useState} from "react";
 import styled from 'styled-components';
 import { useNavigate, useLocation} from "react-router-dom";
 import { Grid } from "../elements";
@@ -18,7 +18,17 @@ const Header = (props) => {
     const isCookie = cookie.load('x_auth') ? true : false;
     const userName = useSelector((state) => state.user.userName);
     const [logout, { isLoading, isError, error }] = useLogoutUserMutation();
+    const [searchTerm, setSearchTerm] = useState("");
+    const [isPending, startTransition] = useTransition();
 
+    const handleKeyPress = (e) => {
+        if(e.key === 'Enter'){
+            navigate(`/product/all?page=1&searchTerm=${searchTerm}`)
+            startTransition(()=>{
+                setSearchTerm("");
+            })
+        }
+    };
 
     if(pathname === "/login" || pathname === "/signup"){
         return null;
@@ -142,7 +152,12 @@ const Header = (props) => {
                     height="35px"
                     />
                 </A>
-                <SearchBox placeholder="검색어를 입력해주세요"/>
+                <SearchBox 
+                placeholder="검색어를 입력해주세요"
+                value={searchTerm}
+                onChange={(e)=>setSearchTerm(e.target.value)}
+                onKeyDown={handleKeyPress}
+                />
             </Grid>
             <Nav/>
         </Grid>

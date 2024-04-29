@@ -110,7 +110,7 @@ router.post("/cart", auth, async (req, res) => {
                 }},
                 { new : true}
             )
-            return res.status(200).send(userInfo.cart);
+            return res.status(200).json({success : true});
         }
     }
     catch (err){
@@ -118,7 +118,7 @@ router.post("/cart", auth, async (req, res) => {
     }
 });
 
-router.post("/cart/:id", auth, async (req, res) => {
+router.delete("/cart/:id", auth, async (req, res) => {
     try{
         const userInfo = await User.findOneAndUpdate(
             { _id : req.user._id },
@@ -136,7 +136,7 @@ router.post("/cart/:id", auth, async (req, res) => {
         const remainProducts = await Product.find({ _id: { $in : cartProducts }})
                                     .populate("publisher")
                                     .exec();
-        return res.status(200).json({remainProducts, removedCart})
+        return res.status(200).json({ success : true, remainProducts, removedCart})
             
     }
     catch(err){

@@ -4,7 +4,7 @@ import { useGetCartQuery } from "../redux/api/user";
 import { useSelector } from "react-redux";
 import { Button } from "../elements";
 import { useNavigate } from "react-router-dom";
-import { useBuyMutation } from "../redux/api/user";
+import { useBuyMutation, useRemoveCartMutation } from "../redux/api/user";
 import Spinner from "../shared/loading";
 
 const Cart = (props) => {
@@ -12,6 +12,19 @@ const Cart = (props) => {
     const { data, refetch ,isLoading, isFetching, isSuccess } = useGetCartQuery({id});
     const navigate = useNavigate();
     const [ buy, { isLoading : buyLoading, isError : isBuyError}] = useBuyMutation();
+    const [ remove, {isLoading : removeLoading, isError : isRemoveError}] = useRemoveCartMutation();
+
+    const removeHandler = async (id) => {
+        try {
+            const { data } = await remove({id});
+            if(data.success !== true){
+                window.alert("상품 삭제 실패");
+            }
+        }
+        catch (err) {
+            console.error("Remove failed", err);
+        }
+    }
 
     const buyHandler = async () => {        
         try {
@@ -64,7 +77,8 @@ const Cart = (props) => {
                         return (
                             <ProductInfoUl key={idx}>
                                 <li>
-                                    <img src={prd.images}/>
+                                    <img onClick={()=>removeHandler(prd._id)}
+                                    src={prd.images}/>
                                     <div>{prd.title}</div>
                                 </li>
                                 <li>

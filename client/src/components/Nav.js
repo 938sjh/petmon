@@ -38,22 +38,22 @@ const Nav = (props) =>{
                         </A>
                     </Li>
                     <Li>
-                        <A>
+                        <A onClick={() => navigate("/product/popular")}>
                             인기상품
                         </A>
                     </Li>
                     <Li>
-                        <A>
+                        <A onClick={() => navigate("/product/new")}>
                             신상품
                         </A>
                     </Li>
                     <Li>
-                        <A>
+                        <A onClick={() => navigate("/product/all?page=1&category=강아지")}>
                             강아지
                         </A>
                     </Li>
                     <Li>
-                        <A>
+                        <A onClick={() => navigate("/product/all?page=1&category=고양이")}>
                             고양이
                         </A>
                     </Li>
@@ -62,11 +62,11 @@ const Nav = (props) =>{
                             소동물
                         </A>
                     </Li>
-                    <Li>
+                    {/* <Li>
                         <A>
                             커뮤니티
                         </A>
-                    </Li>
+                    </Li> */}
                     
                 </Ul>
 

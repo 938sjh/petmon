@@ -3,9 +3,33 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 //시작페이지, 한 화면에 보여질 페이지, 현재페이지, 총페이지 수
-const Pagination = ({startPage, endPage, page, totalPage}) => {
+const Pagination = ({startPage, endPage, page, totalPage, category}) => {
     const navigate = useNavigate();
 
+    if(category){
+        return(
+            <Nav>
+                <Button onClick={()=>navigate(`?page=${page-1}&category=${category}`)} disabled={page === 1}> 
+                    &lt;
+                </Button>
+                {Array(endPage-startPage+1)
+                .fill()
+                .map((_, i)=>(
+                    <Button
+                        key={startPage+i}
+                        onClick={()=>navigate(`?page=${startPage+i}&category=${category}`)}
+                        aria-current={page === startPage+i ? "page" : null}
+                    >
+                        {i+1}
+                    </Button>
+                ))}
+                <Button onClick={()=>navigate(`?page=${page+1}&category=${category}`)}
+                    disabled={page === totalPage}>
+                    &gt;
+                </Button>
+            </Nav>
+        )
+    }
     return(
         <Nav>
             <Button onClick={()=>navigate(`?page=${page-1}`)} disabled={page === 1}> 

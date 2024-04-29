@@ -21,11 +21,11 @@ export const productApi = createApi({
                 method: 'POST',
                 body: dataToSubmit
             }),
-            invalidatesTags: ['Product','NewProduct']
+            invalidatesTags: ['Product','NewProduct', 'PopularProduct']
         }),
         getAllProducts: builder.query({
-            query: ({ page = 1}) => ({
-                url: `/?page=${page}`,
+            query: ({ page = 1, category, searchTerm}) => ({
+                url: `/?page=${page}&category=${category}&searchTerm=${searchTerm}`,
                 method: 'GET'
             }),
             providesTags: ['Product'],               
@@ -43,13 +43,6 @@ export const productApi = createApi({
                 method: 'GET'
             }),
             providesTags: ['NewProduct'],               
-        }),
-        getCategoryProducts: builder.query({
-            query: ({ page = 1, category}) => ({
-                url: `/category?page=${page}&category=${category}`,
-                method: 'GET'
-            }),
-            providesTags: ['Product'],               
         }),
         getDetailProduct: builder.query({
             query: ({id}) => ({

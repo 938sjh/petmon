@@ -3,7 +3,6 @@ import multer from "multer";
 import Product from "../models/Product.js";
 import admin from "../firebase.js";
 import dotenv from "dotenv";
-import User from "../models/User.js";
 
 dotenv.config();
 
@@ -74,26 +73,62 @@ router.post('/', async (req,res) => {
 router.get('/', async (req,res) => {    
     let limit = req.query.limit ? parseInt(req.query.limit) : 12;
     let page = req.query.page ? parseInt(req.query.page) : 1;
-  
-    try{
-        const totalProduct = await Product.countDocuments();
-        const {
-            startPage,
-            endPage,
-            skip,
-            totalPage
-        } = paging(page, totalProduct, limit);
+    let category = req.query.category;
+    let searchTerm = req.query.searchTerm;
 
-        if(page > totalPage){
-            page = totalPage;
+    try{
+        if(searchTerm){
+            try{
+                const productInfo = await Product.find({ 'title': { $regex: searchTerm, $options: "i" } })
+                .populate("publisher")   
+                .exec();
+                return res.status(200).json({ success: true, productInfo, postSize: productInfo.length})
+            }
+            catch (err){
+                return res.status(400).json({ success: false, err})
+            }
         }
+        else if(category){
+            const totalProduct = await Product.countDocuments({category: category});
+            const {
+                startPage,
+                endPage,
+                skip,
+                totalPage
+            } = paging(page, totalProduct, limit);
+
+            if(page > totalPage){
+                page = totalPage;
+            }
         
-        const productInfo = await Product.find() 
-        .skip(skip) 
-        .limit(limit)
-        .populate("publisher")  
-        .exec();
-        return res.status(200).json({ success: true, productInfo, startPage, endPage, totalPage})
+            const productInfo = await Product.find({category: category}) 
+            .skip(skip) 
+            .limit(limit)
+            .populate("publisher")  
+            .exec();
+
+            return res.status(200).json({ success: true, productInfo, startPage, endPage, totalPage})
+        }
+        else{
+            const totalProduct = await Product.countDocuments();
+            const {
+                startPage,
+                endPage,
+                skip,
+                totalPage
+            } = paging(page, totalProduct, limit);
+
+            if(page > totalPage){
+                page = totalPage;
+            }
+            const productInfo = await Product.find() 
+            .skip(skip) 
+            .limit(limit)
+            .populate("publisher")  
+            .exec();
+
+            return res.status(200).json({ success: true, productInfo, startPage, endPage, totalPage})
+        }
     }
     catch (err){
         return res.status(400).json({ success: false, err})
@@ -103,67 +138,31 @@ router.get('/', async (req,res) => {
 
 //sold순으로 top 10개
 router.get('/popular', async (req,res) => {
-    let seartchTerm = req.query.searchTerm;
-  
-    if(term){
-        try{
-            const productInfo = await Product.find()
-            .sort({sold:-1})
-            .limit(10)
-            .find({ $text: {$search: seartchTerm}})
-            .populate("publisher")   
-            .exec();
-            return res.status(200).json({ success: true, productInfo, postSize: productInfo.length})
-        }
-        catch (err){
-            return res.status(400).json({ success: false, err})
-        }
-    } 
-    else {
-        try{
-            const productInfo = await Product.find()
-            .sort({sold:-1})
-            .limit(10)
-            .populate("publisher")   
-            .exec();
-            return res.status(200).json({ success: true, productInfo, postSize: productInfo.length})
-        }
-        catch (err){
-            return res.status(400).json({ success: false, err})
-        }
+    try{
+        const productInfo = await Product.find()
+        .sort({sold:-1})
+        .limit(10)
+        .populate("publisher")   
+        .exec();
+        return res.status(200).json({ success: true, productInfo, postSize: productInfo.length})
+    }
+    catch (err){
+        return res.status(400).json({ success: false, err})
     }
 });
 
 //createdAt 기준으로 top 10개
 router.get('/new', async (req,res) => {
-    let seartchTerm = req.query.searchTerm;
-  
-    if(term){
-        try{
-            const productInfo = await Product.find()
-            .sort({createdAt:-1})
-            .limit(10)
-            .find({ $text: {$search: seartchTerm}})
-            .populate("publisher")   
-            .exec();
-            return res.status(200).json({ success: true, productInfo, postSize: productInfo.length})
-        }
-        catch (err){
-            return res.status(400).json({ success: false, err})
-        }
-    } 
-    else {
-        try{
-            const productInfo = await Product.find()
-            .sort({createdAt:-1})
-            .limit(10)
-            .populate("publisher")   
-            .exec();
-            return res.status(200).json({ success: true, productInfo, postSize: productInfo.length})
-        }
-        catch (err){
-            return res.status(400).json({ success: false, err})
-        }
+    try{
+        const productInfo = await Product.find()
+        .sort({createdAt:-1})
+        .limit(10)
+        .populate("publisher")   
+        .exec();
+        return res.status(200).json({ success: true, productInfo, postSize: productInfo.length})
+    }
+    catch (err){
+        return res.status(400).json({ success: false, err})
     }
 });
 

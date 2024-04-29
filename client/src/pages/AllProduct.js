@@ -10,19 +10,22 @@ import { useSelector } from "react-redux";
 const AllProduct = () => {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
-    const page = parseInt(searchParams.get('page'));
+    const page = parseInt(searchParams.get('page')) || 1;
+    const category = searchParams.get('category') || "";
+    const searchTerm = searchParams.get('searchTerm') || "";
     
-    const { data: posts, isLoading, isFetching } = useGetAllProductsQuery({page});
+    const { data: posts, isLoading, isFetching } = useGetAllProductsQuery({page, category, searchTerm});
     const navigate = useNavigate();
     const itemLoading = useSelector(state => state.product.isLoading);
+    const title = category || "전체보기";
   
-    if (!posts?.productInfo) {
+    if (!searchTerm && !posts?.startPage) {
       return <div>No posts</div>
     }
   
     return (
     <React.Fragment>
-        <Container text="전체보기">
+        <Container text={title}>
             {(isLoading || itemLoading) && <Spinner/>}
             {posts.productInfo.map(({ _id, title, price, images}) => (
                 <div 
@@ -35,7 +38,7 @@ const AllProduct = () => {
                 </div>
         ))}
         </Container>
-        <Pagination startPage={posts.startPage} endPage={posts.endPage} maxPage={5} page={page} totalPage={posts.totalPage}/>
+        {searchTerm ? "" : <Pagination startPage={posts.startPage} endPage={posts.endPage} maxPage={5} page={page} totalPage={posts.totalPage} category={category}/>}
                     
     </React.Fragment>
     )
