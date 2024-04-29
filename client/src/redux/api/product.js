@@ -17,7 +17,7 @@ export const productApi = createApi({
         }),
         uploadProduct: builder.mutation({
             query: (dataToSubmit) => ({
-                url: '/upload',
+                url: '/',
                 method: 'POST',
                 body: dataToSubmit
             }),
@@ -25,7 +25,7 @@ export const productApi = createApi({
         }),
         getAllProducts: builder.query({
             query: ({ page = 1}) => ({
-                url: `/all?page=${page}`,
+                url: `/?page=${page}`,
                 method: 'GET'
             }),
             providesTags: ['Product'],               
@@ -53,18 +53,11 @@ export const productApi = createApi({
         }),
         getDetailProduct: builder.query({
             query: ({id}) => ({
-                url: `/detail/${id}`,
+                url: `/${id}`,
                 method: 'GET'
             })
         }),
-        getCart: builder.query({
-            query:({id}) => ({
-                 url: `/cart/${id}`,
-                 method: 'GET'
-            })
-        })
-
     }),
 });
 
-export const { useUploadImageMutation, useUploadProductMutation, useGetAllProductsQuery, useGetNewProductsQuery, useGetPopularProductsQuery, useGetCategoryProductsQuery, useGetDetailProductQuery, useGetCartQuery } = productApi;
+export const { useUploadImageMutation, useUploadProductMutation, useGetAllProductsQuery, useGetNewProductsQuery, useGetPopularProductsQuery, useGetCategoryProductsQuery, useGetDetailProductQuery } = productApi;

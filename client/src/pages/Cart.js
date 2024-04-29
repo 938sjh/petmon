@@ -1,6 +1,6 @@
 import React, {useState,useEffect} from "react";
 import styled from "styled-components";
-import { useGetCartQuery } from "../redux/api/product";
+import { useGetCartQuery } from "../redux/api/user";
 import { useSelector } from "react-redux";
 import { Button } from "../elements";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +9,7 @@ import Spinner from "../shared/loading";
 
 const Cart = (props) => {
     const id = useSelector(state=>state.user.userId);
-    const { data, isLoading, isFetching, isSuccess } = useGetCartQuery({id});
+    const { data, refetch ,isLoading, isFetching, isSuccess } = useGetCartQuery({id});
     const navigate = useNavigate();
     const [ buy, { isLoading : buyLoading, isError : isBuyError}] = useBuyMutation();
 

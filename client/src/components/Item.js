@@ -59,11 +59,12 @@ const Img = styled.div`
     cursor: pointer;
     height: 100%;
     width: 100%;
+    margin-bottom: 10px;
     z-index: 1;
 `;
 
 const ItemInfo = styled.div`
-    margin: 0 5px;
+    margin: 20px 5px;
     cursor: default;
 `;
 const Title = styled.span`
@@ -72,11 +73,12 @@ const Title = styled.span`
     text-overflow: ellipsis;
     white-space: normal;
     line-height: 21px;
-    padding-bottom: 14px;
+    
     color: rgb(59, 59, 59);
 `;
 const PriceBox = styled.div`
     display: flex;
+    margin-top: 20px;
     justify-content: flex-start;
     flex-direction: column;
 `;

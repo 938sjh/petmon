@@ -38,7 +38,7 @@ const DetailProduct = (props) => {
         }
         try{
             const data = await addCart({id});
-            console.log(data);
+            window.alert("장바구니에 담았습니다.");
         }
         catch(err){
             console.error(err,"장바구니 추가 실패");
@@ -124,7 +124,7 @@ const ImageWrapper = styled.div`
 const ProductInfoWrapper = styled.div`
     width: 100%;
     background-color: white;
-    padding: 30px 24px;
+    padding: 30px 24px 0 24px;
     flex: 1 1 0;
     color: #3b3b3b;
     & p {
@@ -187,6 +187,7 @@ const ButtonWrapper = styled.div`
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    margin-top: 50px;
 `;
 
 const Button = styled.button`

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useNavigate, useLocation} from "react-router-dom";
 import { Grid } from "../elements";
 import { useDispatch, useSelector } from 'react-redux';
+import cookie from "react-cookies";
 import mainLogo from "../image/mainLogo.png";
 import Nav from "./Nav";
 import { useLogoutUserMutation } from "../redux/api/user";
@@ -14,6 +15,7 @@ const Header = (props) => {
     const { pathname } = useLocation();
     const navigate = useNavigate();
     const isLogin = useSelector((state) => state.user.isLogin);
+    const isCookie = cookie.load('x_auth') ? true : false;
     const userName = useSelector((state) => state.user.userName);
     const [logout, { isLoading, isError, error }] = useLogoutUserMutation();
 
@@ -24,13 +26,19 @@ const Header = (props) => {
     if(isLogin && userName) {
         const handleLogout = async () => {
             try{
-                const { data } = await logout();
-                if(data.logoutSuccess === true){
-                    dispatch(setUserInfo({isLogin:false, userName:""}));
-                    navigate("/");
+                if(isCookie){
+                    const { data } = await logout();
+                    if(data.logoutSuccess === true){
+                        dispatch(setUserInfo({isLogin:false, userName:""}));
+                        navigate("/");
+                    }
+                    else{
+                        window.alert("로그아웃에 실패했습니다");
+                    }
                 }
                 else{
-                    window.alert("로그아웃에 실패했습니다");
+                    dispatch(setUserInfo({isLogin:false, userName:""}));
+                    navigate("/");
                 }
             }
             catch (err){

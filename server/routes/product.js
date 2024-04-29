@@ -1,19 +1,13 @@
 import express from "express";
 import multer from "multer";
 import Product from "../models/Product.js";
-import admin from "firebase-admin";
-import serviceAccount from "../serviceAccount.json" assert {type:'json'};
+import admin from "../firebase.js";
 import dotenv from "dotenv";
 import User from "../models/User.js";
 
 dotenv.config();
 
 const router = express.Router();
-
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    storageBucket: process.env.BUCKET_URL
-  });
 
 const bucket = admin.storage().bucket();
 
@@ -65,7 +59,7 @@ router.post('/image', upload.single("file"), (req,res) => {
     stream.end(file.buffer);
 });
 
-router.post('/upload', async (req,res) => {
+router.post('/', async (req,res) => {
     const product = new Product(req.body);
     //db에 저장
     try{
@@ -77,65 +71,38 @@ router.post('/upload', async (req,res) => {
         return res.status(400).json({ success: false, err})
     }
 });
-router.get('/all', async (req,res) => {    
+router.get('/', async (req,res) => {    
     let limit = req.query.limit ? parseInt(req.query.limit) : 12;
     let page = req.query.page ? parseInt(req.query.page) : 1;
-    //let seartchTerm = req.query.searchTerm;
   
-    if(1){
-        try{
-            const totalProduct = await Product.countDocuments();
-            const {
-                startPage,
-                endPage,
-                skip,
-                totalPage
-            } = paging(page, totalProduct, limit);
+    try{
+        const totalProduct = await Product.countDocuments();
+        const {
+            startPage,
+            endPage,
+            skip,
+            totalPage
+        } = paging(page, totalProduct, limit);
 
-            if(page > totalPage){
-                page = totalPage;
-            }
-            
-            const productInfo = await Product.find() 
-            .skip(skip) 
-            .limit(limit)
-            .populate("publisher")  
-            .exec();
-            return res.status(200).json({ success: true, productInfo, startPage, endPage, totalPage})
+        if(page > totalPage){
+            page = totalPage;
         }
-        catch (err){
-            return res.status(400).json({ success: false, err})
-        }
-    } 
-    else {
-        try{
-            const totalProduct = await Product.countDocuments();
-            const {
-                startPage,
-                endPage,
-                skip,
-                totalPage
-            } = paging(page, totalProduct, limit);
-
-            if(page > totalPage){
-                page = totalPage;
-            }
-            
-            const productInfo = await Product.find() 
-            .skip(skip) 
-            .limit(limit)
-            .populate("publisher")  
-            .exec();
-            return res.status(200).json({ success: true, productInfo, startPage, endPage, totalPage})
-        }
-        catch (err){
-            return res.status(400).json({ success: false, err})
-        }
+        
+        const productInfo = await Product.find() 
+        .skip(skip) 
+        .limit(limit)
+        .populate("publisher")  
+        .exec();
+        return res.status(200).json({ success: true, productInfo, startPage, endPage, totalPage})
     }
+    catch (err){
+        return res.status(400).json({ success: false, err})
+    }
+   
 });
 
 //sold순으로 top 10개
-router.post('/popular', async (req,res) => {
+router.get('/popular', async (req,res) => {
     let seartchTerm = req.query.searchTerm;
   
     if(term){
@@ -168,7 +135,7 @@ router.post('/popular', async (req,res) => {
 });
 
 //createdAt 기준으로 top 10개
-router.post('/new', async (req,res) => {
+router.get('/new', async (req,res) => {
     let seartchTerm = req.query.searchTerm;
   
     if(term){
@@ -200,7 +167,7 @@ router.post('/new', async (req,res) => {
     }
 });
 
-router.get('/detail/:id', async (req,res) => {
+router.get('/:id', async (req,res) => {
     let productId = req.params.id;
     const storage = admin.storage();
     // ProductId를 이용해서 DB에서 상품정보 반환
@@ -222,53 +189,5 @@ router.get('/detail/:id', async (req,res) => {
         return res.status(400).send(err)
     }
 });
-
-router.get('/cart/:id', async (req,res) => {
-    let productIds = [];
-    let userId = req.params.id;
-    
-    let returnProducts = [];
-    const storage = admin.storage();
-
-    try {
-        const userInfo = await User.find({ _id: userId });
-        const userCart = userInfo[0].cart;
-        for(let item of userCart){
-            productIds.push(item.id);
-        }
-        const productInfo = await Product.find({ _id: {$in:productIds}})
-        .populate('publisher')
-        .exec();
-        for(const product of productInfo){
-            const file = storage.bucket().file(`image/${product.images[0].path}`);
-            const expirationTime = new Date();
-            expirationTime.setMinutes(expirationTime.getMinutes() + 30);
-
-            let [url] = await file.getSignedUrl({
-                action: 'read',
-                expires: expirationTime
-            });
-            const temp = {};
-            for(let item of userCart){
-                if(product._id == item.id){
-                    temp['_id'] = product._id;
-                    temp['title'] = product.title;
-                    temp['price'] = product.price;
-                    temp['images'] = url;
-                    temp['quantity'] = item.quantity;
-                    returnProducts.push(temp);
-                    break;
-                }
-            }
-        };
-        return res.status(200).json(returnProducts);
-    }
-    catch (err){
-        return res.status(400).send(err)
-    }
-
-});
-
-
 
 export default router;

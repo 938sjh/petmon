@@ -9,8 +9,6 @@ import Spinner from "../shared/loading";
 import { useNavigate } from "react-router-dom";
 
 const UploadProduct = () => {
-    const navigate = useNavigate();
-
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState(0);
@@ -132,10 +130,12 @@ const UploadProduct = () => {
             >
                 상품 업로드
             </Text>
+            
             <DropContainer>
                 <DropBox {...getRootProps()}>
                     <input {...getInputProps()}/>
-                    <FaPlus />
+                    <span>이미지를 올려주세요.<br/>
+                    이미지를 누르면 삭제됩니다.</span>        
                 </DropBox>
                 <PreviewContainer>
                     {images.map((image) => (
