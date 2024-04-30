@@ -6,7 +6,7 @@ export const usersApi = createApi({
         baseUrl: "http://localhost:8080/api/users",
         credentials: 'include'
     }),
-    tagTypes: ['Cart'],
+    tagTypes: ['Cart', 'Order'],
     endpoints: (builder) => ({
         signupUser: builder.mutation({
             query: ({ email, password, userName, phoneNum}) => ({
@@ -42,10 +42,10 @@ export const usersApi = createApi({
             providesTags: ['Cart']
         }),
         addCart: builder.mutation({
-            query: ({id}) => ({
+            query: ({id,quantity}) => ({
                 url: '/cart',
                 method: 'POST',
-                body: {id}
+                body: {id, quantity}
             }),
             invalidatesTags: ['Cart']
         }),
@@ -61,10 +61,17 @@ export const usersApi = createApi({
                 url: '/payment',
                 method: 'POST'
             }),
-            invalidatesTags: ['Cart']
-        })
+            invalidatesTags: ['Cart', 'Order']
+        }),
+        getOrder: builder.query({
+            query:() => ({
+                 url: '/order',
+                 method: 'GET'
+            }),
+            providesTags: ['Order']
+        }),
     }),
 });
 
-export const { useLoginUserMutation, useSignupUserMutation, useLogoutUserMutation, useLazyAuthUserQuery, useAddCartMutation, useRemoveCartMutation, useBuyMutation,  useGetCartQuery } = usersApi;
+export const { useLoginUserMutation, useSignupUserMutation, useLogoutUserMutation, useLazyAuthUserQuery, useAddCartMutation, useRemoveCartMutation, useBuyMutation,  useGetCartQuery, useGetOrderQuery } = usersApi;
 

@@ -23,7 +23,7 @@ const DetailProduct = (props) => {
         }
         else{
             try{
-                const data = await addCart({id});
+                const data = await addCart({id,quantity});
                 navigate("/cart");
             }
             catch(err){
@@ -40,7 +40,7 @@ const DetailProduct = (props) => {
         }
         else{
             try{
-                const data = await addCart({id});
+                const data = await addCart({id,quantity});
                 window.alert("장바구니에 담았습니다.");
             }
             catch(err){

@@ -30,7 +30,7 @@ const Login = (props) => {
     
             if(data.loginSuccess === true){
                 // 로그인 성공 후 유저 데이터 저장
-                dispatch(setUserInfo({isLogin:true, userName:data.userName, userId: data.userId}))
+                dispatch(setUserInfo({isLogin:true, userName:data.userName, userId: data.userId, isAdmin:data.isAdmin}))
                 navigate("/");
             }
             else{

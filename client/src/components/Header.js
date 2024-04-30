@@ -15,6 +15,7 @@ const Header = (props) => {
     const { pathname } = useLocation();
     const navigate = useNavigate();
     const isLogin = useSelector((state) => state.user.isLogin);
+    const isAdmin = useSelector((state) => state.user.isAdmin);
     const isCookie = cookie.load('x_auth') ? true : false;
     const userName = useSelector((state) => state.user.userName);
     const [logout, { isLoading, isError, error }] = useLogoutUserMutation();
@@ -61,11 +62,15 @@ const Header = (props) => {
                 $padding="0 15px"
                 $width="1100px"
                 $margin="10px auto">
+                    {isAdmin ? 
                     <A onClick={()=>navigate("/product/upload")}>
                         <Span>
                             상품 업로드
                         </Span>
                     </A>
+                    :
+                    <Span/>
+                    }
                     <ul
                         style={{
                         float: "right",

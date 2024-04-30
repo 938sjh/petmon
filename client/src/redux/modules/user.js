@@ -14,6 +14,7 @@ const userSlice = createSlice({
             state.isLogin = action.payload.isLogin;
             state.userName = action.payload.userName;
             state.userId = action.payload.userId;
+            state.isAdmin = action.payload.isAdmin;
         },
     },
 });
