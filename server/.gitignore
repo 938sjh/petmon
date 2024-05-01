@@ -3,3 +3,6 @@
 serviceAccount.json
 
 dev.js
+
+Dockerfile
+.dockerignore

@@ -9,7 +9,7 @@ import Spinner from "../shared/loading";
 
 const Cart = (props) => {
     const id = useSelector(state=>state.user.userId);
-    const { data,isLoading, isFetching, isSuccess } = useGetCartQuery({id});
+    const { data,isLoading, isFetching, isSuccess } = useGetCartQuery();
     const navigate = useNavigate();
     const [ buy, { isLoading : buyLoading, isError : isBuyError}] = useBuyMutation();
     const [ remove, {isLoading : removeLoading, isError : isRemoveError}] = useRemoveCartMutation();

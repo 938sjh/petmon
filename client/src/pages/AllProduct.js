@@ -19,8 +19,14 @@ const AllProduct = () => {
     const itemLoading = useSelector(state => state.product.isLoading);
     const title = category || "전체보기";
   
+    //상품 로딩
+    if (isLoading){
+        return <Spinner/>
+    }
+
+    //검색 이후 전체보기 페이지로 이동했을 때 paging 정보 받아올 때까지 대기
     if (!searchTerm && !posts?.startPage) {
-      return <div>No posts</div>
+       return <Spinner/>
     }
   
     return (

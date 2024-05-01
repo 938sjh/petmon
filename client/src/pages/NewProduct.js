@@ -15,7 +15,7 @@ const NewProduct = () => {
     const itemLoading = useSelector(state => state.product.isLoading);
   
     if (!posts?.productInfo) {
-      return <div>No posts</div>
+      return <Spinner/>
     }
   
     return (

@@ -24,10 +24,10 @@
 - RTK Query를 이용한 장바구니 추가, 삭제
 - 상품 업로드 기능(사진은 firebase-storage, 그 외 정보는 MongoDB로 관리)
 - 정규식을 이용한 검색 기능 구현
+- 주문 내역 구현
 
 <h3>구현 예정 기능</h3>
 
-- 주문 내역 페이지
 - i'mport를 이용한 결제 기능
 - Docker를 이용한 배포 및 jenkins, docker hub 를 통한 CI/CD pipe 구축
 <h3>화면 설명</h3>

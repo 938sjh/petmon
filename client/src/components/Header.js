@@ -107,7 +107,12 @@ const Header = (props) => {
                         height="35px"
                         />
                     </A>
-                    <SearchBox placeholder="검색어를 입력해주세요"/>
+                    <SearchBox 
+                    placeholder="검색어를 입력해주세요"
+                    value={searchTerm}
+                    onChange={(e)=>setSearchTerm(e.target.value)}
+                    onKeyDown={handleKeyPress}
+                    />
                 </Grid>
                 <Nav/>
             </Grid>

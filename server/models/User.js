@@ -39,9 +39,13 @@ const userSchema = new Schema({
         type : Array,
         default: []
     },
+    order:{
+        type: Array,
+        default: []
+    },
     token:{
         type:String
-    }
+    }    
 }, { timestamps: true, updatedAt: false });
 
 userSchema.pre('save', function(next){

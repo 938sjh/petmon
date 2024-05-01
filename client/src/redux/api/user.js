@@ -35,8 +35,8 @@ export const usersApi = createApi({
             })
         }),
         getCart: builder.query({
-            query:({id}) => ({
-                 url: `/cart/${id}`,
+            query:() => ({
+                 url: `/cart`,
                  method: 'GET'
             }),
             providesTags: ['Cart']
