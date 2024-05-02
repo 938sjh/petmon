@@ -6,7 +6,7 @@ dotenv.config();
 
 //쿠키(클라이언트)에서 토큰을 가져온 후 복호화하여 유저가 있는지 인증
 
-let auth = async (req, res, next) => {
+let authMiddleware = async (req, res, next) => {
     let token = req.cookies.x_auth;
     if (!token) {
         return res.json({ isAuth: false, error: true});
@@ -39,4 +39,4 @@ let auth = async (req, res, next) => {
     }
 };
 
-export default auth;
+export default authMiddleware;
